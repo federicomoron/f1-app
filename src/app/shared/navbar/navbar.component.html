@@ -5,22 +5,16 @@
     </a>
 
     <ul nz-menu nzMode="horizontal" nzTheme="dark" class="nav-menu" [nzSelectable]="false">
-      <li nz-submenu [nzTitle]="'Equipos'">
-        <ul>
-          <li nz-menu-item routerLink="/teams">Ver equipos</li>
-        </ul>
+      <li nz-menu-item routerLink="/teams">
+        <a routerLink="/teams">Equipos</a>
       </li>
 
-      <li nz-submenu [nzTitle]="'Pilotos'">
-        <ul>
-          <li nz-menu-item routerLink="/drivers">Ver pilotos</li>
-        </ul>
+      <li nz-menu-item routerLink="/drivers">
+        <a routerLink="/drivers">Pilotos</a>
       </li>
 
-      <li nz-submenu [nzTitle]="'Gráficas'">
-        <ul>
-          <li nz-menu-item routerLink="/charts">Ver gráficas</li>
-        </ul>
+      <li nz-menu-item routerLink="/charts">
+        <a routerLink="/charts">Gráficas</a>
       </li>
     </ul>
 
