@@ -4,6 +4,7 @@ node_modules/
 # Angular build output
 /dist/
 /.angular/
+/out-tsc/
 
 # VS Code
 .vscode/
@@ -18,9 +19,19 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Env files (if any)
+# Environment files
 .env
 .env.*
+.env.local
+.env.production
 
 # Tooling caches
 .eslintcache
+
+# Vercel
+.vercel
+
+# Testing
+/coverage
+/libpeerconnection.log
+/connect.lock
