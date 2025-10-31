@@ -4,21 +4,18 @@ import { catchError, map, throwError, type Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 
+import type {
+  ApiDriversResponse,
+  ApiGenericResponse,
+  ApiTeamResponse,
+  ApiTeamsResponse,
+} from '../models/api-response.model';
 import type { Driver } from '@models/driver.model';
 import type {
   ConstructorsChampionshipResponse,
   DriversChampionshipResponse,
 } from '@models/standings.model';
 import type { Team } from '@models/team.model';
-
-interface ApiListResponse<T> {
-  total?: number;
-  results?: T[];
-  data?: T[];
-  teams?: T[];
-  team?: any[];
-  drivers?: any[];
-}
 
 @Injectable({ providedIn: 'root' })
 export class F1ApiService {
@@ -30,26 +27,24 @@ export class F1ApiService {
     const url = year
       ? `${this.baseUrl}/${year}/${this.endpoints.teams}`
       : `${this.baseUrl}/${this.endpoints.teams}`;
-    return this.http.get<ApiListResponse<Team>>(url).pipe(
+    return this.http.get<ApiTeamsResponse>(url).pipe(
       map((res) => (res.teams || []).map(this.mapTeam)),
       catchError(this.handleError)
     );
   }
 
   getCurrentTeams(): Observable<Team[]> {
-    return this.http
-      .get<ApiListResponse<Team>>(`${this.baseUrl}/${this.endpoints.currentTeams}`)
-      .pipe(
-        map((res) => (res.teams || []).map(this.mapTeam)),
-        catchError(this.handleError)
-      );
+    return this.http.get<ApiTeamsResponse>(`${this.baseUrl}/${this.endpoints.currentTeams}`).pipe(
+      map((res) => (res.teams || []).map(this.mapTeam)),
+      catchError(this.handleError)
+    );
   }
 
   getTeam(teamId: string, year?: number): Observable<Team | null> {
     const url = year
       ? `${this.baseUrl}/${year}/${this.endpoints.teams}/${teamId}`
       : `${this.baseUrl}/${this.endpoints.teams}/${teamId}`;
-    return this.http.get<any>(url).pipe(
+    return this.http.get<ApiTeamResponse>(url).pipe(
       map((res) => {
         const raw = Array.isArray(res.team) ? res.team[0] : res;
         return raw ? this.mapTeam(raw) : null;
@@ -62,7 +57,7 @@ export class F1ApiService {
     const url = year
       ? `${this.baseUrl}/${year}/${this.endpoints.teams}/${teamId}/${this.endpoints.drivers}`
       : `${this.baseUrl}/${this.endpoints.currentTeams}/${teamId}/${this.endpoints.drivers}`;
-    return this.http.get<ApiListResponse<any>>(url).pipe(
+    return this.http.get<ApiDriversResponse>(url).pipe(
       map((response) =>
         (response.drivers || []).map((item: any) => this.mapDriver(item.driver || item))
       ),
@@ -76,7 +71,7 @@ export class F1ApiService {
       params = params.set('year', String(year));
     }
     return this.http
-      .get<ApiListResponse<any>>(`${this.baseUrl}/${this.endpoints.driversSearch}`, { params })
+      .get<ApiDriversResponse>(`${this.baseUrl}/${this.endpoints.driversSearch}`, { params })
       .pipe(
         map((res) => (res.drivers || []).map(this.mapDriver)),
         catchError(this.handleError)
@@ -87,28 +82,30 @@ export class F1ApiService {
     const url = year
       ? `${this.baseUrl}/${year}/${this.endpoints.drivers}`
       : `${this.baseUrl}/${this.endpoints.drivers}`;
-    return this.http.get<ApiListResponse<any>>(url).pipe(
+    return this.http.get<ApiDriversResponse>(url).pipe(
       map((res) => (res.drivers || []).map(this.mapDriver)),
       catchError(this.handleError)
     );
   }
 
   getDriversChampionship(year: number): Observable<DriversChampionshipResponse> {
-    return this.http.get<any>(`${this.baseUrl}/${year}/${this.endpoints.driversChampionship}`).pipe(
-      map((res: any): DriversChampionshipResponse => {
-        const rawList = res.standings || res.drivers_championship || [];
-        const standings = rawList.map(this.mapDriverStanding);
-        return { year, standings };
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.driversChampionship}`)
+      .pipe(
+        map((res): DriversChampionshipResponse => {
+          const rawList = res.standings || res.drivers_championship || [];
+          const standings = rawList.map(this.mapDriverStanding);
+          return { year, standings };
+        }),
+        catchError(this.handleError)
+      );
   }
 
   getConstructorsChampionship(year: number): Observable<ConstructorsChampionshipResponse> {
     return this.http
-      .get<any>(`${this.baseUrl}/${year}/${this.endpoints.constructorsChampionship}`)
+      .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.constructorsChampionship}`)
       .pipe(
-        map((res: any): ConstructorsChampionshipResponse => {
+        map((res): ConstructorsChampionshipResponse => {
           const rawList = res.standings || res.constructors_championship || [];
           const standings = rawList.map(this.mapConstructorStanding);
           return { year, standings };
