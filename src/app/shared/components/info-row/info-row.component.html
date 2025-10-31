@@ -1,0 +1,7 @@
+<div class="info-row">
+  <span class="label">{{ label }}</span>
+  <span class="value" *ngIf="!isLink">{{ value }}</span>
+  <a class="value link" *ngIf="isLink && href" [href]="href" target="_blank" rel="noopener">{{
+    value
+  }}</a>
+</div>

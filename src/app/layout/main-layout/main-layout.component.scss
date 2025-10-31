@@ -1,0 +1,12 @@
+@use '../../../styles/mixins/elevation' as *;
+
+:host ::ng-deep .ant-layout {
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+/* Container for routed content */
+.container {
+  padding: 24px;
+}
