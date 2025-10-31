@@ -2,13 +2,11 @@
   background: var(--color-surface);
   color: var(--color-text);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  /* Reduce left padding to bring logo closer to edge */
   padding-left: 8px;
 }
 
 .navbar-inner {
   display: grid;
-  /* Make the center column flexible so the menu can stretch */
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: var(--space-4);
@@ -33,12 +31,9 @@
 
 .nav-menu {
   background: transparent;
-  /* Allow graceful overflow on small screens */
-  overflow-x: auto;
-  white-space: nowrap;
+  overflow-x: visible;
 }
 
-/* Desktop: spread top-level items across available space */
 @media (min-width: 769px) {
   .nav-menu {
     justify-self: stretch;
@@ -48,38 +43,23 @@
   }
 }
 
-/* Highlight active/hover with F1 accent */
-.nav-menu .ant-menu-submenu-selected > .ant-menu-submenu-title,
-.nav-menu .ant-menu-submenu-title:hover {
+.nav-menu .ant-menu-item-selected,
+.nav-menu .ant-menu-item:hover {
   border-bottom: 2px solid var(--color-accent);
+  background-color: transparent !important;
 }
 
-/* Flyout panel grid */
-.nav-flyout {
-  .ant-menu {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(120px, 1fr));
-    gap: var(--space-2);
-    padding: var(--space-4);
-    background: var(--color-surface);
-  }
-  .ant-menu-item {
-    background: transparent;
-    color: var(--color-text);
-    border-radius: var(--radius-sm);
-  }
-  .ant-menu-item:hover {
-    background: color-mix(in srgb, var(--color-accent) 18%, transparent);
-  }
+.nav-menu .ant-menu-item a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .navbar-spacer {
   display: block;
 }
 
-/* Spacing between top-level menu titles */
-.nav-menu .ant-menu-submenu-title {
-  padding-inline: 24px; /* balanced spacing when distributed */
+.nav-menu .ant-menu-item {
+  padding-inline: 24px;
 }
 
 /* Responsive tweaks */
@@ -94,7 +74,7 @@
   .f1-logo-img {
     width: 64px;
   }
-  .nav-menu .ant-menu-submenu-title {
+  .nav-menu .ant-menu-item {
     padding-inline: 12px;
   }
 }

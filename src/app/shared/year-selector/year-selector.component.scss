@@ -5,21 +5,18 @@
 
 .year-label {
   color: var(--color-text);
-  margin: 0 0 8px 0; /* match input label spacing */
-  line-height: 1.5715; /* AntD baseline */
+  margin: 0 0 8px 0;
+  line-height: 1.5715;
 }
 
-/* Control background on dark surface */
 .year-select .ant-select-selector {
   background: var(--color-surface) !important;
 }
 
-/* Constrain width so it doesn't span full row in simple forms */
 .year-select {
   min-width: 160px;
   max-width: 240px;
   width: 100%;
-  margin: 0; /* avoid extra vertical offset */
-  /* Visually align with text input without affecting layout flow */
+  margin: 0;
   transform: translateY(-7px);
 }
