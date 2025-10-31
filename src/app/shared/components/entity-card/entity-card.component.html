@@ -1,0 +1,32 @@
+<nz-card class="entity-card" nzBordered>
+  <div
+    class="media"
+    [ngClass]="['mode-' + imageMode]"
+    [style.height.px]="mediaHeight"
+    *ngIf="imageUrl && !imgError"
+  >
+    <img [src]="imageUrl" [alt]="title" (error)="onImgError()" />
+  </div>
+  <div
+    class="media placeholder"
+    [ngClass]="['mode-' + imageMode]"
+    [style.height.px]="mediaHeight"
+    *ngIf="!imageUrl || imgError"
+  ></div>
+
+  <div class="content">
+    <div class="title">{{ title }}</div>
+    <div class="subtitle" *ngIf="subtitle">{{ subtitle }}</div>
+
+    <div class="info" *ngIf="infoEntries.length">
+      <div class="info-item" *ngFor="let item of infoEntries">
+        <span class="label">{{ item.key }}</span>
+        <span class="value">{{ item.value }}</span>
+      </div>
+    </div>
+
+    <div class="actions" *ngIf="linkUrl">
+      <a [href]="linkUrl" target="_blank" rel="noopener">{{ linkLabel || 'Ver más' }}</a>
+    </div>
+  </div>
+</nz-card>

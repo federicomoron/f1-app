@@ -1,0 +1,5 @@
+@mixin focus-ring($color: #4c9ffe, $offset: 2px, $radius: 4px) {
+  outline: none;
+  box-shadow: 0 0 0 $offset rgba($color, 0.5);
+  border-radius: $radius;
+}

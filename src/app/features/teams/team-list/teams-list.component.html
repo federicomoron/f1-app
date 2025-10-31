@@ -1,0 +1,12 @@
+<h2 class="page-title">Equipos</h2>
+<app-loading-wrapper [loading]="loading()" [paragraphRows]="6">
+  <div class="teams-grid">
+    <a *ngFor="let team of teams()" class="team-card-link" [routerLink]="['/teams', team.id]">
+      <app-entity-card
+        [title]="imageMapper.getTeamDisplayName(team.name)"
+        [subtitle]="team.country"
+        [imageUrl]="team.logo || imageMapper.getTeamImagePath(team.name)"
+      />
+    </a>
+  </div>
+</app-loading-wrapper>

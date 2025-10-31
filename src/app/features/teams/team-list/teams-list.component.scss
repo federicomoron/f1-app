@@ -1,0 +1,17 @@
+/* Specific layout for teams grid */
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 575.98px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Make the whole card clickable without affecting styles */
+.team-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}

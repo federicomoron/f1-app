@@ -1,0 +1,178 @@
+@use 'tokens/tokens';
+@use 'tokens/themes/dark';
+@use 'mixins/media' as *;
+@use 'mixins/focus' as *;
+@use 'mixins/elevation' as *;
+@use 'mixins/truncate' as *;
+@use 'page-common';
+
+@layer base, components, utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-bg);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+
+  :root {
+    --primary-color: var(--color-primary);
+  }
+}
+
+@layer components {
+  nz-header {
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .page-title {
+    font-size: 18px;
+    margin: 0 0 16px 0;
+    color: var(--color-accent);
+  }
+
+  .ant-layout-sider-trigger {
+    display: none;
+  }
+
+  .sider-toggle {
+    background: none;
+    border: 0;
+    color: inherit;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px 8px;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  .ant-layout,
+  .ant-layout-header,
+  .ant-layout-sider {
+    background: transparent;
+    color: var(--color-text);
+  }
+
+  body,
+  .ant-layout {
+    background: var(--color-bg);
+  }
+
+  .ant-layout-content,
+  nz-content,
+  .container,
+  .home-container {
+    background: var(--color-bg) !important;
+    color: var(--color-text);
+  }
+
+  .ant-typography,
+  [nz-typography] {
+    color: var(--color-text);
+  }
+
+  .ant-card,
+  .ant-card-head,
+  .ant-card-bordered,
+  .ant-card-body {
+    background: var(--color-surface) !important;
+    color: var(--color-text);
+  }
+
+  .ant-table-tbody > tr > td {
+    background: var(--color-surface) !important;
+  }
+
+  .ant-select-selector {
+    background: var(--color-surface) !important;
+  }
+
+  .ant-select-single .ant-select-selector .ant-select-selection-item {
+    color: var(--color-text) !important;
+  }
+  .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+    color: var(--color-muted) !important;
+  }
+
+  .ant-select-dropdown {
+    background: var(--color-surface) !important;
+    color: var(--color-text);
+  }
+  .ant-select-item,
+  .ant-select-item-option-content {
+    color: var(--color-text);
+  }
+  .ant-select-item-option-active,
+  .ant-select-item-option:hover {
+    background: color-mix(in srgb, var(--color-primary) 22%, transparent) !important;
+    color: var(--color-text) !important;
+  }
+  .ant-select-item-option-selected {
+    background: color-mix(in srgb, var(--color-accent) 24%, transparent) !important;
+    color: var(--color-text);
+  }
+
+  .ant-card-bordered {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .ant-card-head-title {
+    color: var(--color-text);
+  }
+
+  .ant-menu-submenu-popup {
+    .ant-menu {
+      display: block;
+      width: max-content;
+      min-width: 0;
+      padding: var(--space-2);
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+    .ant-menu-item {
+      background: transparent;
+      border-radius: var(--radius-sm);
+      padding-inline: 12px;
+    }
+    .ant-menu-item:hover {
+      background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    }
+  }
+
+  .ant-layout-sider:not(.ant-layout-sider-collapsed) ul[nz-menu] {
+    width: 100%;
+  }
+  .ant-layout-sider:not(.ant-layout-sider-collapsed) ul[nz-menu] .ant-menu-title-content {
+    white-space: normal;
+  }
+
+  .ant-layout-sider-collapsed ul[nz-menu] .ant-menu-item {
+    justify-content: center;
+  }
+  .ant-layout-sider-collapsed ul[nz-menu] .ant-menu-title-content {
+    display: none;
+  }
+}

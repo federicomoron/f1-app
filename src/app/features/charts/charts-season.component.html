@@ -1,0 +1,31 @@
+<h2 class="page-title">Gráficas por temporada</h2>
+
+<form nz-form (submit)="$event.preventDefault()" class="filter-row">
+  <app-year-selector
+    [years]="years"
+    [selectedYear]="year.value"
+    (yearChange)="year.setValue($event)"
+  />
+</form>
+
+<div nz-row [nzGutter]="[16, 16]">
+  <div nz-col [nzXs]="24" [nzLg]="12">
+    <nz-card nzTitle="Top 5 Pilotos" class="chart-card">
+      <div class="chart-wrap">
+        <canvas baseChart [type]="'bar'" [data]="driversData()" [options]="barOptions"></canvas>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col [nzXs]="24" [nzLg]="12">
+    <nz-card nzTitle="Top 5 Constructores" class="chart-card">
+      <div class="chart-wrap">
+        <canvas
+          baseChart
+          [type]="'bar'"
+          [data]="constructorsData()"
+          [options]="barOptions"
+        ></canvas>
+      </div>
+    </nz-card>
+  </div>
+</div>

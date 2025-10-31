@@ -1,0 +1,47 @@
+name: Angular CI Pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: 🧹 Lint, Format & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint (no warnings)
+        run: npm run lint -- --max-warnings=0
+
+      - name: Check Prettier formatting
+        run: npm run format:check
+
+      - name: Run TypeScript type check
+        run: npm run type-check
+
+  build:
+    name: 🔧 Build Angular App
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular App (Production)
+        run: npm run build:prod
