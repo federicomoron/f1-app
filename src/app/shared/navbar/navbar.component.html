@@ -1,0 +1,29 @@
+<nz-header class="navbar">
+  <div class="navbar-inner">
+    <a routerLink="/" class="brand" aria-label="Inicio">
+      <img src="assets/images/f1-logo.jpg" alt="F1" class="f1-logo-img" />
+    </a>
+
+    <ul nz-menu nzMode="horizontal" nzTheme="dark" class="nav-menu" [nzSelectable]="false">
+      <li nz-submenu [nzTitle]="'Equipos'">
+        <ul>
+          <li nz-menu-item routerLink="/teams">Ver equipos</li>
+        </ul>
+      </li>
+
+      <li nz-submenu [nzTitle]="'Pilotos'">
+        <ul>
+          <li nz-menu-item routerLink="/drivers">Ver pilotos</li>
+        </ul>
+      </li>
+
+      <li nz-submenu [nzTitle]="'Gráficas'">
+        <ul>
+          <li nz-menu-item routerLink="/charts">Ver gráficas</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="navbar-spacer" aria-hidden="true"></div>
+  </div>
+</nz-header>

@@ -1,0 +1,15 @@
+@use 'sass:map';
+
+$shadows: (
+  1: var(--shadow-1),
+  2: var(--shadow-2),
+) !default;
+
+/// Usage: @include elevation(1);
+@mixin elevation($level: 1) {
+  $shadow: map.get($shadows, $level);
+  @if $shadow == null {
+    @warn "Unknown elevation level `#{$level}`";
+  }
+  box-shadow: if($shadow != null, $shadow, none);
+}

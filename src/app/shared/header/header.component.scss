@@ -1,0 +1,23 @@
+@use '../../../styles/mixins/focus' as *;
+
+.app-header {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+  font-family: var(--font-sans);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  color: var(--color-accent);
+}
+
+.header-actions button {
+  @include focus-ring(var(--color-primary));
+}

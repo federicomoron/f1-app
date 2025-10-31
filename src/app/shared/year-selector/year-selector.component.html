@@ -1,0 +1,13 @@
+<div class="year-selector-wrap">
+  <label nz-form-item class="year-label">{{ label }}</label>
+  <nz-select
+    class="year-select"
+    [ngModel]="selectedYear"
+    (ngModelChange)="onChange($event)"
+    nzAllowClear
+    nzPlaceHolder="Cualquiera"
+    [nzDropdownMatchSelectWidth]="false"
+  >
+    <nz-option *ngFor="let y of yearsToUse" [nzLabel]="y" [nzValue]="y"></nz-option>
+  </nz-select>
+</div>

@@ -1,0 +1,56 @@
+<a routerLink="/teams" class="back-link">← Volver</a>
+
+<app-loading-wrapper [loading]="loadingTeam()" [showTitle]="true" [paragraphRows]="3">
+  <ng-container *ngIf="team() as currentTeam">
+    <h2 class="page-title">{{ currentTeam.name }}</h2>
+    <div class="team-info">
+      <app-info-row
+        *ngIf="currentTeam.country"
+        label="País"
+        [value]="currentTeam.country"
+      ></app-info-row>
+      <app-info-row *ngIf="currentTeam.base" label="Base" [value]="currentTeam.base"></app-info-row>
+      <app-info-row
+        *ngIf="currentTeam.principal"
+        label="Director"
+        [value]="currentTeam.principal"
+      ></app-info-row>
+      <app-info-row
+        *ngIf="
+          currentTeam.driversChampionships !== null &&
+          currentTeam.driversChampionships !== undefined
+        "
+        label="Campeonatos de Pilotos"
+        [value]="currentTeam.driversChampionships"
+      ></app-info-row>
+      <app-info-row
+        *ngIf="currentTeam.championships !== null && currentTeam.championships !== undefined"
+        label="Campeonatos de Constructores"
+        [value]="currentTeam.championships"
+      ></app-info-row>
+      <app-info-row
+        *ngIf="currentTeam.wikipedia"
+        label="Wikipedia"
+        value="Ver"
+        [isLink]="true"
+        [href]="currentTeam.wikipedia"
+      ></app-info-row>
+    </div>
+  </ng-container>
+</app-loading-wrapper>
+
+<h3 class="section-title">Pilotos (temporada actual)</h3>
+<app-loading-wrapper [loading]="loadingDrivers()" [paragraphRows]="4">
+  <div class="drivers-grid">
+    <app-entity-card
+      *ngFor="let driver of activeDrivers()"
+      [title]="driver.name + ' ' + driver.surname"
+      [subtitle]="driver.nationality"
+      [imageUrl]="imageMapper.getDriverImagePath(driver)"
+      imageMode="portrait"
+      [coverHeight]="200"
+      [linkLabel]="'Wikipedia'"
+      [linkUrl]="driver.wikipedia || undefined"
+    />
+  </div>
+</app-loading-wrapper>
