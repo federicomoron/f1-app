@@ -1,0 +1,11 @@
+export const F1_CONSTANTS = {
+  MIN_SEARCH_LENGTH: 4,
+  DEBOUNCE_TIME: 350,
+  DEFAULT_PAGE_SIZE: 10,
+  TOP_DRIVERS_COUNT: 5,
+  TOP_CONSTRUCTORS_COUNT: 5,
+  YEARS_RANGE: 75,
+  EXCLUDED_DRIVER_IDS: ['doohan'],
+} as const;
+
+export type F1Constants = typeof F1_CONSTANTS;
