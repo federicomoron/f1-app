@@ -1,4 +1,3 @@
-/* Year selector column alignment */
 .year-col {
   display: flex;
   align-items: flex-start;
@@ -8,12 +7,10 @@
   }
 }
 
-/* Override max-width from global form-wrap to fit content */
 .form-wrap {
   max-width: fit-content;
 }
 
-/* Table wrapper with visible horizontal scroll */
 .table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -23,7 +20,6 @@
   padding: 2px;
   position: relative;
 
-  /* Styled scrollbar */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 
@@ -46,9 +42,8 @@
 
   @media (max-width: 768px) {
     margin-top: 28px;
-    padding-bottom: 20px; /* Generous space for scrollbar */
+    padding-bottom: 20px;
 
-    /* Force scrollbar ALWAYS visible with high contrast on mobile */
     scrollbar-width: auto !important;
     scrollbar-color: #e0e0e0 #2a2a2a !important;
 
@@ -85,7 +80,6 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
 
-    /* Additional visual indicator to reinforce scroll */
     &::before {
       content: '';
       position: absolute;
@@ -156,7 +150,6 @@
     font-size: 13px;
   }
 
-  /* Add more vertical space between rows on mobile */
   .drivers-table tbody tr {
     border-bottom: 1px solid var(--color-border, #333);
   }

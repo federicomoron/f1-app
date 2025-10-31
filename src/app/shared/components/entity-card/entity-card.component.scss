@@ -9,13 +9,11 @@
   overflow: hidden;
 }
 .media {
-  /* height is controlled from template via [style.height.px] */
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--color-surface);
 }
-/* Logo mode (default): keep images contained and modest */
 .media.mode-logo img {
   max-height: 70px;
   max-width: 80%;
@@ -24,11 +22,10 @@
   object-fit: contain;
   display: block;
 }
-/* Portrait mode: fill the area for better visibility of people photos */
 .media.mode-portrait img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* show full body without cropping head/feet */
+  object-fit: contain;
   display: block;
 }
 .media.placeholder {
