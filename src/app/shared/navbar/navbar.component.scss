@@ -2,7 +2,7 @@
   background: var(--color-surface);
   color: var(--color-text);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-left: 8px;
+  padding-left: 0.5rem;
 }
 
 .navbar-inner {
@@ -20,7 +20,7 @@
   text-decoration: none;
 }
 .f1-logo-img {
-  width: 100px;
+  width: 6.25rem;
   height: auto;
   display: inline-block;
 }
@@ -59,7 +59,7 @@
 }
 
 .nav-menu .ant-menu-item {
-  padding-inline: 24px;
+  padding-inline: 1.5rem;
 }
 
 /* Responsive tweaks */
@@ -72,9 +72,12 @@
     display: none;
   }
   .f1-logo-img {
-    width: 64px;
+    width: 4rem;
+  }
+  .nav-menu {
+    margin-left: 0.5rem;
   }
   .nav-menu .ant-menu-item {
-    padding-inline: 12px;
+    padding-inline: 0.9375rem;
   }
 }

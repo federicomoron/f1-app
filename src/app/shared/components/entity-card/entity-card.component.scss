@@ -3,7 +3,7 @@
 }
 .entity-card {
   background: var(--color-surface);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   box-shadow: var(--shadow-1);
   color: var(--color-text);
   overflow: hidden;
@@ -15,7 +15,7 @@
   background: var(--color-surface);
 }
 .media.mode-logo img {
-  max-height: 70px;
+  max-height: 4.375rem;
   max-width: 80%;
   width: auto;
   height: auto;
@@ -32,7 +32,7 @@
   background: #1f1f1f;
 }
 .content {
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
 }
 .title {
   color: var(--color-text);
@@ -48,17 +48,17 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 2px;
+  margin-top: 0.125rem;
 }
 .info {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 8px 12px;
-  margin-top: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(8.75rem, 1fr));
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.625rem;
 }
 .info-item {
   display: flex;
-  gap: 6px;
+  gap: 0.375rem;
   align-items: baseline;
 }
 .info-item .label {
@@ -70,7 +70,7 @@
   font-size: 0.95rem;
 }
 .actions {
-  margin-top: 10px;
+  margin-top: 0.625rem;
 }
 .actions a {
   color: var(--color-link);
