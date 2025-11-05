@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal, type OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BaseChartDirective } from 'ng2-charts';
 import { catchError, of } from 'rxjs';
 
 import { F1_CONSTANTS } from '@constants/f1.constants';
@@ -11,6 +10,8 @@ import { UtilsService } from '@services/utils.service';
 import { CHARTS_NZ_MODULES } from '@shared/ng-zorro-modules';
 import { YearSelectorComponent } from '@shared/year-selector/year-selector.component';
 
+import { ChartDisplayComponent } from '../../shared/components/chart-display/chart-display.component';
+
 import type { ChartConfiguration, ChartOptions } from 'chart.js';
 
 @Component({
@@ -19,7 +20,7 @@ import type { ChartConfiguration, ChartOptions } from 'chart.js';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    BaseChartDirective,
+    ChartDisplayComponent,
     YearSelectorComponent,
     ...CHARTS_NZ_MODULES,
   ],

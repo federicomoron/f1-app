@@ -11,21 +11,14 @@
 <div nz-row [nzGutter]="[16, 16]">
   <div nz-col [nzXs]="24" [nzLg]="12">
     <nz-card nzTitle="Top 5 Pilotos" class="chart-card">
-      <div class="chart-wrap">
-        <canvas baseChart [type]="'bar'" [data]="driversData()" [options]="barOptions"></canvas>
-      </div>
+      <app-chart-display type="bar" [data]="driversData()" [options]="barOptions">
+      </app-chart-display>
     </nz-card>
   </div>
   <div nz-col [nzXs]="24" [nzLg]="12">
     <nz-card nzTitle="Top 5 Constructores" class="chart-card">
-      <div class="chart-wrap">
-        <canvas
-          baseChart
-          [type]="'bar'"
-          [data]="constructorsData()"
-          [options]="barOptions"
-        ></canvas>
-      </div>
+      <app-chart-display type="bar" [data]="constructorsData()" [options]="barOptions">
+      </app-chart-display>
     </nz-card>
   </div>
 </div>
