@@ -1,0 +1,25 @@
+@mixin responsive-grid($min-width: 13.75rem, $gap: var(--space-4)) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
+  gap: $gap;
+}
+
+@mixin responsive-grid-single-mobile($breakpoint: 575.98px) {
+  @media (max-width: $breakpoint) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Specific grid patterns used in the app
+@mixin teams-grid {
+  @include responsive-grid(15rem, var(--space-4));
+  @include responsive-grid-single-mobile(575.98px);
+}
+
+@mixin drivers-grid {
+  @include responsive-grid(13.75rem, var(--space-4));
+}
+
+@mixin info-grid {
+  @include responsive-grid(8.75rem, 0.5rem 0.75rem);
+}

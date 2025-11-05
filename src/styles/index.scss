@@ -4,7 +4,10 @@
 @use 'mixins/focus' as *;
 @use 'mixins/elevation' as *;
 @use 'mixins/truncate' as *;
+@use 'mixins/border' as *;
+@use 'mixins/grid' as *;
 @use 'page-common';
+@use 'utilities';
 
 @layer base, components, utilities;
 
