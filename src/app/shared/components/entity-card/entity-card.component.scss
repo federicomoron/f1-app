@@ -29,7 +29,7 @@
   display: block;
 }
 .media.placeholder {
-  background: #1f1f1f;
+  background: var(--color-surface);
 }
 .content {
   padding: 0.75rem 1rem;
@@ -43,7 +43,7 @@
   text-overflow: ellipsis;
 }
 .subtitle {
-  color: var(--color-subtext, #9aa4b2);
+  color: var(--color-subtext);
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
@@ -62,7 +62,7 @@
   align-items: baseline;
 }
 .info-item .label {
-  color: var(--color-subtext, #9aa4b2);
+  color: var(--color-subtext);
   font-size: 0.85rem;
 }
 .info-item .value {
