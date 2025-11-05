@@ -1,9 +1,9 @@
 .filter-row {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
 }
 
 .chart-card .ant-card-body {
-  padding: 0.75rem;
+  padding: var(--space-3);
   background: var(--color-surface);
   color: var(--color-text);
 }
