@@ -120,56 +120,56 @@ export class F1ApiService {
   }
 
   private readonly mapTeam = (raw: any): Team => ({
-    id: raw.teamId || raw.id || '',
-    name: raw.teamName || raw.name || '',
-    country: raw.teamNationality || raw.nationality,
-    championships: raw.constructorsChampionships || raw.championships,
+    id: raw.teamId || '',
+    name: raw.teamName || '',
+    country: raw.teamNationality || raw.country,
+    championships: raw.constructorsChampionships,
     driversChampionships: raw.driversChampionships,
-    wikipedia: raw.url || raw.wikipedia,
-    base: raw.base || raw.headquarters || raw.location,
-    principal: raw.principal || raw.teamPrincipal || raw.teamChief,
-    logo: raw.logo || raw.teamLogo,
+    wikipedia: raw.url,
+    base: raw.base,
+    principal: raw.principal,
+    logo: raw.logo,
   });
 
   private readonly mapDriver = (raw: any): Driver => ({
-    id: raw.driverId || raw.id || '',
-    name: raw.name || raw.givenName || '',
-    surname: raw.surname || raw.familyName || '',
-    code: raw.shortName || raw.code,
+    id: raw.driverId || '',
+    name: raw.name || '',
+    surname: raw.surname || '',
+    code: raw.shortName,
     number: (() => {
-      const n = raw.number || raw.driverNumber || raw.permanentNumber;
+      const n = raw.number;
       if (n == null) return undefined;
       const parsed = typeof n === 'string' ? parseInt(n, 10) : n;
       return Number.isFinite(parsed) ? parsed : undefined;
     })(),
     nationality: raw.nationality,
-    dateOfBirth: raw.birthday || raw.dateOfBirth || raw.birthDate,
-    wikipedia: raw.url || raw.wikipedia,
+    dateOfBirth: raw.birthday,
+    wikipedia: raw.url,
   });
 
   private readonly mapDriverStanding = (raw: any) => {
-    const driver = raw.driver || raw.Driver || {};
+    const driver = raw.driver || {};
     return {
       position: Number(raw.position || 0),
       points: Number(raw.points || 0),
       wins: raw.wins != null ? Number(raw.wins) : undefined,
       driver: {
-        id: driver.driverId || driver.id || '',
-        name: driver.name || driver.givenName || '',
-        surname: driver.surname || driver.familyName || '',
+        id: driver.driverId || raw.driverId || '',
+        name: driver.name || '',
+        surname: driver.surname || '',
       },
     };
   };
 
   private readonly mapConstructorStanding = (raw: any) => {
-    const team = raw.team || raw.constructor || raw.Constructor || {};
+    const team = raw.team || {};
     return {
       position: Number(raw.position || 0),
       points: Number(raw.points || 0),
       wins: raw.wins != null ? Number(raw.wins) : undefined,
       team: {
-        id: team.teamId || team.constructorId || team.id || '',
-        name: team.name || team.teamName || '',
+        id: team.teamId || raw.teamId || '',
+        name: team.teamName || '',
       },
     };
   };
