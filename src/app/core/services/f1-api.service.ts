@@ -103,7 +103,9 @@ export class F1ApiService {
       .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.driversChampionship}`)
       .pipe(
         map((res): DriversChampionshipResponse => {
-          const standings = (res.standings || []).map(this.mapDriverStanding);
+          const standings = (res.drivers_championship || res.standings || []).map(
+            this.mapDriverStanding
+          );
           return { year, standings };
         }),
         catchError(this.handleError)
@@ -115,7 +117,9 @@ export class F1ApiService {
       .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.constructorsChampionship}`)
       .pipe(
         map((res): ConstructorsChampionshipResponse => {
-          const standings = (res.standings || []).map(this.mapConstructorStanding);
+          const standings = (res.constructors_championship || res.standings || []).map(
+            this.mapConstructorStanding
+          );
           return { year, standings };
         }),
         catchError(this.handleError)
