@@ -9,6 +9,10 @@ import type {
   ApiGenericResponse,
   ApiTeamResponse,
   ApiTeamsResponse,
+  RawConstructorStanding,
+  RawDriver,
+  RawDriverStanding,
+  RawTeam,
 } from '../models/api-response.model';
 import type { Driver } from '@models/driver.model';
 import type {
@@ -46,8 +50,8 @@ export class F1ApiService {
       : `${this.baseUrl}/${this.endpoints.teams}/${teamId}`;
     return this.http.get<ApiTeamResponse>(url).pipe(
       map((res) => {
-        const raw = Array.isArray(res.team) ? res.team[0] : res;
-        return raw ? this.mapTeam(raw) : null;
+        const teamData = Array.isArray(res.team) ? res.team[0] : res.team;
+        return teamData ? this.mapTeam(teamData) : null;
       }),
       catchError(this.handleError)
     );
@@ -59,7 +63,9 @@ export class F1ApiService {
       : `${this.baseUrl}/${this.endpoints.currentTeams}/${teamId}/${this.endpoints.drivers}`;
     return this.http.get<ApiDriversResponse>(url).pipe(
       map((response) =>
-        (response.drivers || []).map((item: any) => this.mapDriver(item.driver || item))
+        (response.drivers || []).map((item) =>
+          this.mapDriver('driver' in item ? item.driver : item)
+        )
       ),
       catchError(this.handleError)
     );
@@ -73,7 +79,9 @@ export class F1ApiService {
     return this.http
       .get<ApiDriversResponse>(`${this.baseUrl}/${this.endpoints.driversSearch}`, { params })
       .pipe(
-        map((res) => (res.drivers || []).map(this.mapDriver)),
+        map((res) =>
+          (res.drivers || []).map((item) => this.mapDriver('driver' in item ? item.driver : item))
+        ),
         catchError(this.handleError)
       );
   }
@@ -83,7 +91,9 @@ export class F1ApiService {
       ? `${this.baseUrl}/${year}/${this.endpoints.drivers}`
       : `${this.baseUrl}/${this.endpoints.drivers}`;
     return this.http.get<ApiDriversResponse>(url).pipe(
-      map((res) => (res.drivers || []).map(this.mapDriver)),
+      map((res) =>
+        (res.drivers || []).map((item) => this.mapDriver('driver' in item ? item.driver : item))
+      ),
       catchError(this.handleError)
     );
   }
@@ -93,8 +103,7 @@ export class F1ApiService {
       .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.driversChampionship}`)
       .pipe(
         map((res): DriversChampionshipResponse => {
-          const rawList = res.standings || res.drivers_championship || [];
-          const standings = rawList.map(this.mapDriverStanding);
+          const standings = (res.standings || []).map(this.mapDriverStanding);
           return { year, standings };
         }),
         catchError(this.handleError)
@@ -106,8 +115,7 @@ export class F1ApiService {
       .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.constructorsChampionship}`)
       .pipe(
         map((res): ConstructorsChampionshipResponse => {
-          const rawList = res.standings || res.constructors_championship || [];
-          const standings = rawList.map(this.mapConstructorStanding);
+          const standings = (res.standings || []).map(this.mapConstructorStanding);
           return { year, standings };
         }),
         catchError(this.handleError)
@@ -119,9 +127,9 @@ export class F1ApiService {
     return throwError(() => new Error(err.message || 'Error querying F1 API'));
   }
 
-  private readonly mapTeam = (raw: any): Team => ({
-    id: raw.teamId || '',
-    name: raw.teamName || '',
+  private readonly mapTeam = (raw: RawTeam): Team => ({
+    id: raw.teamId ?? '',
+    name: raw.teamName ?? '',
     country: raw.teamNationality || raw.country,
     championships: raw.constructorsChampionships,
     driversChampionships: raw.driversChampionships,
@@ -131,46 +139,35 @@ export class F1ApiService {
     logo: raw.logo,
   });
 
-  private readonly mapDriver = (raw: any): Driver => ({
-    id: raw.driverId || '',
-    name: raw.name || '',
-    surname: raw.surname || '',
+  private readonly mapDriver = (raw: RawDriver): Driver => ({
+    id: raw.driverId ?? '',
+    name: raw.name ?? '',
+    surname: raw.surname ?? '',
     code: raw.shortName,
-    number: (() => {
-      const n = raw.number;
-      if (n == null) return undefined;
-      const parsed = typeof n === 'string' ? parseInt(n, 10) : n;
-      return Number.isFinite(parsed) ? parsed : undefined;
-    })(),
+    number: raw.number ? Number(raw.number) : undefined,
     nationality: raw.nationality,
     dateOfBirth: raw.birthday,
     wikipedia: raw.url,
   });
 
-  private readonly mapDriverStanding = (raw: any) => {
-    const driver = raw.driver || {};
-    return {
-      position: Number(raw.position || 0),
-      points: Number(raw.points || 0),
-      wins: raw.wins != null ? Number(raw.wins) : undefined,
-      driver: {
-        id: driver.driverId || raw.driverId || '',
-        name: driver.name || '',
-        surname: driver.surname || '',
-      },
-    };
-  };
+  private readonly mapDriverStanding = (raw: RawDriverStanding) => ({
+    position: Number(raw.position ?? 0),
+    points: Number(raw.points ?? 0),
+    wins: raw.wins != null ? Number(raw.wins) : undefined,
+    driver: {
+      id: raw.driver?.driverId ?? raw.driverId ?? '',
+      name: raw.driver?.name ?? '',
+      surname: raw.driver?.surname ?? '',
+    },
+  });
 
-  private readonly mapConstructorStanding = (raw: any) => {
-    const team = raw.team || {};
-    return {
-      position: Number(raw.position || 0),
-      points: Number(raw.points || 0),
-      wins: raw.wins != null ? Number(raw.wins) : undefined,
-      team: {
-        id: team.teamId || raw.teamId || '',
-        name: team.teamName || '',
-      },
-    };
-  };
+  private readonly mapConstructorStanding = (raw: RawConstructorStanding) => ({
+    position: Number(raw.position ?? 0),
+    points: Number(raw.points ?? 0),
+    wins: raw.wins != null ? Number(raw.wins) : undefined,
+    team: {
+      id: raw.team?.teamId ?? raw.teamId ?? '',
+      name: raw.team?.teamName ?? '',
+    },
+  });
 }
