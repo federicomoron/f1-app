@@ -1,0 +1,10 @@
+<div class="chart-wrap">
+  <canvas
+    baseChart
+    [type]="type"
+    [data]="data"
+    [options]="options"
+    (chartClick)="onChartClick($event?.event, $event?.active)"
+    (chartHover)="onChartHover($event.event, $event.active)"
+  ></canvas>
+</div>
