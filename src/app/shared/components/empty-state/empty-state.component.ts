@@ -8,15 +8,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   standalone: true,
   imports: [CommonModule, NzIconModule, NzButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="empty-state">
-      <span nz-icon [nzType]="icon" [nzTheme]="iconTheme" class="empty-icon"></span>
-      <p class="empty-message">{{ message }}</p>
-      <button *ngIf="actionLabel" nz-button nzType="primary" (click)="onAction()">
-        {{ actionLabel }}
-      </button>
-    </div>
-  `,
+  templateUrl: './empty-state.component.html',
   styles: [
     `
       .empty-state {

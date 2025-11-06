@@ -76,28 +76,26 @@ export class ImageMapperService {
     if (!name) return '';
 
     const slug = this.utils.normalizeSlug(name);
-    let file = this.teamFiles[slug];
-
-    if (!file) {
-      if (slug.includes('sauber') || slug.includes('kick')) {
-        file = 'kicksauber';
-      } else if (slug.includes('astonmartin') || slug.includes('aston')) {
-        file = 'astonmartin';
-      } else {
-        file = slug;
-      }
-    }
+    const file = this.teamFiles[slug] ?? this.getFallbackTeamFile(slug);
 
     return `assets/images/teams/${file}.avif`;
+  }
+
+  private getFallbackTeamFile(slug: string): string {
+    if (slug.includes('sauber') || slug.includes('kick')) {
+      return 'kicksauber';
+    }
+    if (slug.includes('astonmartin') || slug.includes('aston')) {
+      return 'astonmartin';
+    }
+    return slug;
   }
 
   getDriverImagePath(driver: Driver | string | undefined): string {
     const surname = typeof driver === 'string' ? driver : driver?.surname;
     if (!surname) return '';
 
-    const parts = surname.trim().split(/\s+/);
-    const lastName = parts[parts.length - 1];
-
+    const lastName = surname.trim().split(/\s+/).at(-1) ?? '';
     const slug = this.utils.normalizeSlug(lastName);
     return `assets/images/drivers/${slug}.avif`;
   }
@@ -105,7 +103,7 @@ export class ImageMapperService {
   getTeamDisplayName(name: string | undefined): string {
     if (!name) return '';
     const slug = this.utils.normalizeSlug(name);
-    return this.teamDisplayNames[slug] || name;
+    return this.teamDisplayNames[slug] ?? name;
   }
 
   getInitials(name: string): string {
@@ -117,8 +115,8 @@ export class ImageMapperService {
       return parts[0].slice(0, 2).toUpperCase();
     }
 
-    const first = parts[0][0] || '';
-    const last = parts[parts.length - 1][0] || '';
+    const first = parts[0]?.[0] ?? '';
+    const last = parts.at(-1)?.[0] ?? '';
     return (first + last).toUpperCase();
   }
 }

@@ -1,10 +1,10 @@
 .team-info {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-5);
   padding: 0;
 }
 
 .drivers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(13.75rem, 1fr));
+  gap: var(--space-4);
 }

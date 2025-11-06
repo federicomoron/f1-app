@@ -1,22 +1,62 @@
+export interface RawTeam {
+  teamId?: string;
+  teamName?: string;
+  teamNationality?: string;
+  country?: string;
+  constructorsChampionships?: number;
+  driversChampionships?: number;
+  url?: string;
+  base?: string;
+  principal?: string;
+  logo?: string;
+}
+
+export interface RawDriver {
+  driverId?: string;
+  name?: string;
+  surname?: string;
+  shortName?: string;
+  number?: number | string;
+  nationality?: string;
+  birthday?: string;
+  url?: string;
+}
+
+export interface RawDriverStanding {
+  position?: number | string;
+  points?: number | string;
+  wins?: number | string;
+  driver?: RawDriver;
+  driverId?: string;
+}
+
+export interface RawConstructorStanding {
+  position?: number | string;
+  points?: number | string;
+  wins?: number | string;
+  team?: RawTeam;
+  teamId?: string;
+}
+
 export interface ApiTeamsResponse {
   total?: number;
-  teams?: any[];
+  teams?: RawTeam[];
 }
 
 export interface ApiDriversResponse {
   total?: number;
-  drivers?: any[];
+  drivers?: (RawDriver | { driver: RawDriver })[];
 }
 
 export interface ApiTeamResponse {
-  team?: any[];
+  team?: RawTeam | RawTeam[];
 }
 
 export interface ApiGenericResponse {
   total?: number;
-  results?: any[];
-  data?: any[];
-  standings?: any[];
-  drivers_championship?: any[];
-  constructors_championship?: any[];
+  results?: unknown[];
+  data?: unknown[];
+  standings?: (RawDriverStanding | RawConstructorStanding)[];
+  drivers_championship?: RawDriverStanding[];
+  constructors_championship?: RawConstructorStanding[];
 }

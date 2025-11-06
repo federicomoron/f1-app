@@ -1,14 +1,20 @@
-import { HttpClient, HttpParams, type HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, throwError, type Observable } from 'rxjs';
+import { catchError, map, type Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+
+import { ErrorHandlerService } from './error-handler.service';
 
 import type {
   ApiDriversResponse,
   ApiGenericResponse,
   ApiTeamResponse,
   ApiTeamsResponse,
+  RawConstructorStanding,
+  RawDriver,
+  RawDriverStanding,
+  RawTeam,
 } from '../models/api-response.model';
 import type { Driver } from '@models/driver.model';
 import type {
@@ -20,6 +26,7 @@ import type { Team } from '@models/team.model';
 @Injectable({ providedIn: 'root' })
 export class F1ApiService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ErrorHandlerService);
   private readonly baseUrl = environment.api.baseUrl;
   private readonly endpoints = environment.api.endpoints;
 
@@ -29,14 +36,24 @@ export class F1ApiService {
       : `${this.baseUrl}/${this.endpoints.teams}`;
     return this.http.get<ApiTeamsResponse>(url).pipe(
       map((res) => (res.teams || []).map(this.mapTeam)),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Team[]>({
+          operation: 'obtener equipos',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
   getCurrentTeams(): Observable<Team[]> {
     return this.http.get<ApiTeamsResponse>(`${this.baseUrl}/${this.endpoints.currentTeams}`).pipe(
       map((res) => (res.teams || []).map(this.mapTeam)),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Team[]>({
+          operation: 'obtener equipos actuales',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
@@ -46,10 +63,15 @@ export class F1ApiService {
       : `${this.baseUrl}/${this.endpoints.teams}/${teamId}`;
     return this.http.get<ApiTeamResponse>(url).pipe(
       map((res) => {
-        const raw = Array.isArray(res.team) ? res.team[0] : res;
-        return raw ? this.mapTeam(raw) : null;
+        const teamData = Array.isArray(res.team) ? res.team[0] : res.team;
+        return teamData ? this.mapTeam(teamData) : null;
       }),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Team | null>({
+          operation: 'obtener equipo',
+          fallbackValue: null,
+        })
+      )
     );
   }
 
@@ -59,9 +81,16 @@ export class F1ApiService {
       : `${this.baseUrl}/${this.endpoints.currentTeams}/${teamId}/${this.endpoints.drivers}`;
     return this.http.get<ApiDriversResponse>(url).pipe(
       map((response) =>
-        (response.drivers || []).map((item: any) => this.mapDriver(item.driver || item))
+        (response.drivers || []).map((item) =>
+          this.mapDriver('driver' in item ? item.driver : item)
+        )
       ),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Driver[]>({
+          operation: 'obtener pilotos del equipo',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
@@ -73,8 +102,15 @@ export class F1ApiService {
     return this.http
       .get<ApiDriversResponse>(`${this.baseUrl}/${this.endpoints.driversSearch}`, { params })
       .pipe(
-        map((res) => (res.drivers || []).map(this.mapDriver)),
-        catchError(this.handleError)
+        map((res) =>
+          (res.drivers || []).map((item) => this.mapDriver('driver' in item ? item.driver : item))
+        ),
+        catchError(
+          this.errorHandler.handleHttpError<Driver[]>({
+            operation: 'buscar pilotos',
+            fallbackValue: [],
+          })
+        )
       );
   }
 
@@ -83,8 +119,15 @@ export class F1ApiService {
       ? `${this.baseUrl}/${year}/${this.endpoints.drivers}`
       : `${this.baseUrl}/${this.endpoints.drivers}`;
     return this.http.get<ApiDriversResponse>(url).pipe(
-      map((res) => (res.drivers || []).map(this.mapDriver)),
-      catchError(this.handleError)
+      map((res) =>
+        (res.drivers || []).map((item) => this.mapDriver('driver' in item ? item.driver : item))
+      ),
+      catchError(
+        this.errorHandler.handleHttpError<Driver[]>({
+          operation: 'obtener pilotos',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
@@ -93,11 +136,17 @@ export class F1ApiService {
       .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.driversChampionship}`)
       .pipe(
         map((res): DriversChampionshipResponse => {
-          const rawList = res.standings || res.drivers_championship || [];
-          const standings = rawList.map(this.mapDriverStanding);
+          const standings = (res.drivers_championship || res.standings || []).map(
+            this.mapDriverStanding
+          );
           return { year, standings };
         }),
-        catchError(this.handleError)
+        catchError(
+          this.errorHandler.handleHttpError<DriversChampionshipResponse>({
+            operation: 'obtener campeonato de pilotos',
+            fallbackValue: { year, standings: [] },
+          })
+        )
       );
   }
 
@@ -106,71 +155,61 @@ export class F1ApiService {
       .get<ApiGenericResponse>(`${this.baseUrl}/${year}/${this.endpoints.constructorsChampionship}`)
       .pipe(
         map((res): ConstructorsChampionshipResponse => {
-          const rawList = res.standings || res.constructors_championship || [];
-          const standings = rawList.map(this.mapConstructorStanding);
+          const standings = (res.constructors_championship || res.standings || []).map(
+            this.mapConstructorStanding
+          );
           return { year, standings };
         }),
-        catchError(this.handleError)
+        catchError(
+          this.errorHandler.handleHttpError<ConstructorsChampionshipResponse>({
+            operation: 'obtener campeonato de constructores',
+            fallbackValue: { year, standings: [] },
+          })
+        )
       );
   }
 
-  private handleError(err: HttpErrorResponse) {
-    console.error('F1 API error:', err);
-    return throwError(() => new Error(err.message || 'Error querying F1 API'));
-  }
-
-  private readonly mapTeam = (raw: any): Team => ({
-    id: raw.teamId || raw.id || '',
-    name: raw.teamName || raw.name || '',
-    country: raw.teamNationality || raw.nationality,
-    championships: raw.constructorsChampionships || raw.championships,
+  private readonly mapTeam = (raw: RawTeam): Team => ({
+    id: raw.teamId ?? '',
+    name: raw.teamName ?? '',
+    country: raw.teamNationality || raw.country,
+    championships: raw.constructorsChampionships,
     driversChampionships: raw.driversChampionships,
-    wikipedia: raw.url || raw.wikipedia,
-    base: raw.base || raw.headquarters || raw.location,
-    principal: raw.principal || raw.teamPrincipal || raw.teamChief,
-    logo: raw.logo || raw.teamLogo,
+    wikipedia: raw.url,
+    base: raw.base,
+    principal: raw.principal,
+    logo: raw.logo,
   });
 
-  private readonly mapDriver = (raw: any): Driver => ({
-    id: raw.driverId || raw.id || '',
-    name: raw.name || raw.givenName || '',
-    surname: raw.surname || raw.familyName || '',
-    code: raw.shortName || raw.code,
-    number: (() => {
-      const n = raw.number || raw.driverNumber || raw.permanentNumber;
-      if (n == null) return undefined;
-      const parsed = typeof n === 'string' ? parseInt(n, 10) : n;
-      return Number.isFinite(parsed) ? parsed : undefined;
-    })(),
+  private readonly mapDriver = (raw: RawDriver): Driver => ({
+    id: raw.driverId ?? '',
+    name: raw.name ?? '',
+    surname: raw.surname ?? '',
+    code: raw.shortName,
+    number: raw.number ? Number(raw.number) : undefined,
     nationality: raw.nationality,
-    dateOfBirth: raw.birthday || raw.dateOfBirth || raw.birthDate,
-    wikipedia: raw.url || raw.wikipedia,
+    dateOfBirth: raw.birthday,
+    wikipedia: raw.url,
   });
 
-  private readonly mapDriverStanding = (raw: any) => {
-    const driver = raw.driver || raw.Driver || {};
-    return {
-      position: Number(raw.position || 0),
-      points: Number(raw.points || 0),
-      wins: raw.wins != null ? Number(raw.wins) : undefined,
-      driver: {
-        id: driver.driverId || driver.id || '',
-        name: driver.name || driver.givenName || '',
-        surname: driver.surname || driver.familyName || '',
-      },
-    };
-  };
+  private readonly mapDriverStanding = (raw: RawDriverStanding) => ({
+    position: Number(raw.position ?? 0),
+    points: Number(raw.points ?? 0),
+    wins: raw.wins != null ? Number(raw.wins) : undefined,
+    driver: {
+      id: raw.driver?.driverId ?? raw.driverId ?? '',
+      name: raw.driver?.name ?? '',
+      surname: raw.driver?.surname ?? '',
+    },
+  });
 
-  private readonly mapConstructorStanding = (raw: any) => {
-    const team = raw.team || raw.constructor || raw.Constructor || {};
-    return {
-      position: Number(raw.position || 0),
-      points: Number(raw.points || 0),
-      wins: raw.wins != null ? Number(raw.wins) : undefined,
-      team: {
-        id: team.teamId || team.constructorId || team.id || '',
-        name: team.name || team.teamName || '',
-      },
-    };
-  };
+  private readonly mapConstructorStanding = (raw: RawConstructorStanding) => ({
+    position: Number(raw.position ?? 0),
+    points: Number(raw.points ?? 0),
+    wins: raw.wins != null ? Number(raw.wins) : undefined,
+    team: {
+      id: raw.team?.teamId ?? raw.teamId ?? '',
+      name: raw.team?.teamName ?? '',
+    },
+  });
 }

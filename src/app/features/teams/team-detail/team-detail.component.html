@@ -16,15 +16,12 @@
         [value]="currentTeam.principal"
       ></app-info-row>
       <app-info-row
-        *ngIf="
-          currentTeam.driversChampionships !== null &&
-          currentTeam.driversChampionships !== undefined
-        "
+        *ngIf="currentTeam.driversChampionships != null"
         label="Campeonatos de Pilotos"
         [value]="currentTeam.driversChampionships"
       ></app-info-row>
       <app-info-row
-        *ngIf="currentTeam.championships !== null && currentTeam.championships !== undefined"
+        *ngIf="currentTeam.championships != null"
         label="Campeonatos de Constructores"
         [value]="currentTeam.championships"
       ></app-info-row>

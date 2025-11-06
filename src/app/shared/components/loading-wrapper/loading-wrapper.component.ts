@@ -7,16 +7,7 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
   standalone: true,
   imports: [CommonModule, NzSkeletonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <nz-skeleton
-      [nzLoading]="loading"
-      [nzActive]="active"
-      [nzTitle]="showTitle"
-      [nzParagraph]="{ rows: paragraphRows }"
-    >
-      <ng-content />
-    </nz-skeleton>
-  `,
+  templateUrl: './loading-wrapper.component.html',
   styles: [],
 })
 export class LoadingWrapperComponent {
