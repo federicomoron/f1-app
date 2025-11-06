@@ -1,8 +1,10 @@
-import { HttpClient, HttpParams, type HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, throwError, type Observable } from 'rxjs';
+import { catchError, map, type Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+
+import { ErrorHandlerService } from './error-handler.service';
 
 import type {
   ApiDriversResponse,
@@ -24,6 +26,7 @@ import type { Team } from '@models/team.model';
 @Injectable({ providedIn: 'root' })
 export class F1ApiService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ErrorHandlerService);
   private readonly baseUrl = environment.api.baseUrl;
   private readonly endpoints = environment.api.endpoints;
 
@@ -33,14 +36,24 @@ export class F1ApiService {
       : `${this.baseUrl}/${this.endpoints.teams}`;
     return this.http.get<ApiTeamsResponse>(url).pipe(
       map((res) => (res.teams || []).map(this.mapTeam)),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Team[]>({
+          operation: 'obtener equipos',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
   getCurrentTeams(): Observable<Team[]> {
     return this.http.get<ApiTeamsResponse>(`${this.baseUrl}/${this.endpoints.currentTeams}`).pipe(
       map((res) => (res.teams || []).map(this.mapTeam)),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Team[]>({
+          operation: 'obtener equipos actuales',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
@@ -53,7 +66,12 @@ export class F1ApiService {
         const teamData = Array.isArray(res.team) ? res.team[0] : res.team;
         return teamData ? this.mapTeam(teamData) : null;
       }),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Team | null>({
+          operation: 'obtener equipo',
+          fallbackValue: null,
+        })
+      )
     );
   }
 
@@ -67,7 +85,12 @@ export class F1ApiService {
           this.mapDriver('driver' in item ? item.driver : item)
         )
       ),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Driver[]>({
+          operation: 'obtener pilotos del equipo',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
@@ -82,7 +105,12 @@ export class F1ApiService {
         map((res) =>
           (res.drivers || []).map((item) => this.mapDriver('driver' in item ? item.driver : item))
         ),
-        catchError(this.handleError)
+        catchError(
+          this.errorHandler.handleHttpError<Driver[]>({
+            operation: 'buscar pilotos',
+            fallbackValue: [],
+          })
+        )
       );
   }
 
@@ -94,7 +122,12 @@ export class F1ApiService {
       map((res) =>
         (res.drivers || []).map((item) => this.mapDriver('driver' in item ? item.driver : item))
       ),
-      catchError(this.handleError)
+      catchError(
+        this.errorHandler.handleHttpError<Driver[]>({
+          operation: 'obtener pilotos',
+          fallbackValue: [],
+        })
+      )
     );
   }
 
@@ -108,7 +141,12 @@ export class F1ApiService {
           );
           return { year, standings };
         }),
-        catchError(this.handleError)
+        catchError(
+          this.errorHandler.handleHttpError<DriversChampionshipResponse>({
+            operation: 'obtener campeonato de pilotos',
+            fallbackValue: { year, standings: [] },
+          })
+        )
       );
   }
 
@@ -122,13 +160,13 @@ export class F1ApiService {
           );
           return { year, standings };
         }),
-        catchError(this.handleError)
+        catchError(
+          this.errorHandler.handleHttpError<ConstructorsChampionshipResponse>({
+            operation: 'obtener campeonato de constructores',
+            fallbackValue: { year, standings: [] },
+          })
+        )
       );
-  }
-
-  private handleError(err: HttpErrorResponse) {
-    console.error('F1 API error:', err);
-    return throwError(() => new Error(err.message || 'Error querying F1 API'));
   }
 
   private readonly mapTeam = (raw: RawTeam): Team => ({
