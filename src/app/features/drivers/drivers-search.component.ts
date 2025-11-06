@@ -8,9 +8,8 @@ import {
   type OnInit,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { combineLatest, of, type Subscription } from 'rxjs';
+import { combineLatest, type Subscription } from 'rxjs';
 import {
-  catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -83,15 +82,16 @@ export class DriversSearchComponent implements OnInit, OnDestroy {
         tap(() => this.hasSearched.set(true)),
         switchMap(([query, year]) =>
           year
-            ? this.api.getDrivers(year).pipe(
-                map((drivers) =>
-                  drivers.filter((driver) =>
-                    `${driver.name} ${driver.surname}`.toLowerCase().includes(query.toLowerCase())
+            ? this.api
+                .getDrivers(year)
+                .pipe(
+                  map((drivers) =>
+                    drivers.filter((driver) =>
+                      `${driver.name} ${driver.surname}`.toLowerCase().includes(query.toLowerCase())
+                    )
                   )
-                ),
-                catchError(() => of([]))
-              )
-            : this.api.searchDrivers(query).pipe(catchError(() => of([])))
+                )
+            : this.api.searchDrivers(query)
         )
       )
       .subscribe({
