@@ -1,0 +1,11 @@
+@mixin border-bottom($color: var(--color-border), $width: 1px, $style: solid) {
+  border-bottom: $width $style $color;
+}
+
+@mixin border-accent-bottom($width: 2px) {
+  border-bottom: $width solid var(--color-accent);
+}
+
+@mixin border-primary-left($width: 4px) {
+  border-left: $width solid var(--color-primary);
+}

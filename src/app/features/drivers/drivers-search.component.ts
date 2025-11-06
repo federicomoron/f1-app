@@ -8,9 +8,8 @@ import {
   type OnInit,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { combineLatest, of, type Subscription } from 'rxjs';
+import { combineLatest, type Subscription } from 'rxjs';
 import {
-  catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -24,7 +23,7 @@ import { F1_CONSTANTS } from '@constants/f1.constants';
 import { ErrorHandlerService } from '@services/error-handler.service';
 import { F1ApiService } from '@services/f1-api.service';
 import { UtilsService } from '@services/utils.service';
-import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
+import { DriversTableComponent } from '@shared/components/drivers-table/drivers-table.component';
 import { DRIVERS_NZ_MODULES } from '@shared/ng-zorro-modules';
 import { YearSelectorComponent } from '@shared/year-selector/year-selector.component';
 
@@ -37,7 +36,7 @@ import type { Driver } from '@models/driver.model';
     CommonModule,
     ReactiveFormsModule,
     YearSelectorComponent,
-    EmptyStateComponent,
+    DriversTableComponent,
     ...DRIVERS_NZ_MODULES,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,7 +50,6 @@ export class DriversSearchComponent implements OnInit, OnDestroy {
 
   private readonly MIN_SEARCH_LENGTH = F1_CONSTANTS.MIN_SEARCH_LENGTH;
   private readonly DEBOUNCE_TIME = F1_CONSTANTS.DEBOUNCE_TIME;
-  readonly DEFAULT_PAGE_SIZE = F1_CONSTANTS.DEFAULT_PAGE_SIZE;
 
   searchQuery = new FormControl<string>('', {
     nonNullable: true,
@@ -84,15 +82,16 @@ export class DriversSearchComponent implements OnInit, OnDestroy {
         tap(() => this.hasSearched.set(true)),
         switchMap(([query, year]) =>
           year
-            ? this.api.getDrivers(year).pipe(
-                map((drivers) =>
-                  drivers.filter((driver) =>
-                    `${driver.name} ${driver.surname}`.toLowerCase().includes(query.toLowerCase())
+            ? this.api
+                .getDrivers(year)
+                .pipe(
+                  map((drivers) =>
+                    drivers.filter((driver) =>
+                      `${driver.name} ${driver.surname}`.toLowerCase().includes(query.toLowerCase())
+                    )
                   )
-                ),
-                catchError(() => of([]))
-              )
-            : this.api.searchDrivers(query).pipe(catchError(() => of([])))
+                )
+            : this.api.searchDrivers(query)
         )
       )
       .subscribe({
@@ -107,8 +106,6 @@ export class DriversSearchComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
   }
-
-  formatDate = (dateString: string) => this.utils.formatDate(dateString);
 
   getEmptyMessage(): string {
     if (!this.hasSearched()) {
